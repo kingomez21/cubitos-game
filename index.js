@@ -23,21 +23,38 @@ var config = {
 
 var game = new Phaser.Game(config);
 
-function preload() {
-    //this.load.setBaseURL('http://labs.phaser.io');
+let score = 0
+let scoreText
 
+function ColisionFresa(player, fresa) {
+    fresa.disableBody(true, true);
+    score += 10;
+    scoreText.setText('Score: ' + score);
+}
+
+function meta(player, bomb) {
+     
+    this.physics.pause();
+
+    player.setTint(0xff0000);
+
+    player.anims.play('turn');
+
+    gameOver = true;
+    alert(`tu puntuacion fue: ${score}`)
+    if(gameOver === true)location.reload() ;
+}
+
+function preload() {
+    
     this.load.image('sky', 'http://labs.phaser.io/assets/skies/bigsky.png');
     this.load.image('logo', 'http://labs.phaser.io/assets/sprites/phaser3-logo.png');
     this.load.image('red', 'http://labs.phaser.io/assets/particles/red.png');
-    this.load.image('suelo', 'assets/suel.png')
-    this.load.image('bg', 'http://labs.phaser.io/assets/pics/the-end-by-iloe-and-made.jpg');
-
-    /*
-        Musica del juego
-    */
-
-    //this.load.audio('theme', 'https://labs.phaser.io/assets/audio/sd-ingame1.wav');
-
+    this.load.image('suelo', 'assets/plataformas.png')
+    this.load.image('bg', 'assets/nieve.jpg');
+    this.load.image('diamante', 'http://labs.phaser.io/assets/sprites/diamond.png');
+    this.load.image('meta', 'assets/meta.png');
+    // sprite
     this.load.spritesheet('dude',
         'http://labs.phaser.io/assets/sprites/dude.png',
         { frameWidth: 32, frameHeight: 48 }
@@ -47,14 +64,14 @@ function preload() {
 
 function create() {
 
-    this.cameras.main.setBounds(0, 0, 1920 * 2, 1080 * 2);
+    this.cameras.main.setBounds(0, 0, 1280 * 2, 720 * 2);
 
     //this.add.image(400, 300, 'sky');
-    this.physics.world.setBounds(0, 0, 1920 * 2, 1080 * 2);
+    this.physics.world.setBounds(0, 0, 1280 * 2, 720 * 2);
     this.add.image(0, 0, 'bg').setOrigin(0);
-    this.add.image(1920, 0, 'bg').setOrigin(0).setFlipX(true);
-    this.add.image(0, 1080, 'bg').setOrigin(0).setFlipY(true);
-    this.add.image(1920, 1080, 'bg').setOrigin(0).setFlipX(true).setFlipY(true);
+    this.add.image(1280, 0, 'bg').setOrigin(0).setFlipX(true);
+    this.add.image(0, 720, 'bg').setOrigin(0).setFlipY(true);
+    this.add.image(1280, 720, 'bg').setOrigin(0).setFlipX(true).setFlipY(true);
 
     platforms = this.physics.add.staticGroup();
 
@@ -96,13 +113,25 @@ function create() {
 
     player.body.setGravityY(300);
     this.physics.add.collider(player, platforms);
-    this.cameras.main.startFollow(player, platforms, 0.05, 0.05);
     
-
+    this.cameras.main.startFollow(player, platforms, 0.05, 0.05);
+    scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
+    
     cursors = this.input.keyboard.createCursorKeys();
 
+   
+    diamantes = this.physics.add.staticGroup()
+    diamantes.create(700, 518, 'diamante').setScale(0.8, 0.8).refreshBody();
 
+    this.physics.add.collider(diamantes, platforms);
+    this.physics.add.collider(player, diamantes, ColisionFresa, null, this);
 
+    metas = this.physics.add.staticGroup();
+
+    metas.create(900, 518, 'meta').setScale(0.1, 0.1).refreshBody();
+    this.physics.add.collider(metas, platforms);
+
+    this.physics.add.collider(player, metas, meta, null, this);
 }
 
 function update() {
