@@ -26,8 +26,8 @@ var game = new Phaser.Game(config);
 let score = 0
 let scoreText
 
-function ColisionFresa(player, fresa) {
-    fresa.disableBody(true, true);
+function ColisionDiamante(player, diamante) {
+    diamante.disableBody(true, true);
     score += 10;
     scoreText.setText('Score: ' + score);
 }
@@ -56,8 +56,8 @@ function preload() {
     this.load.image('meta', 'assets/meta.png');
     // sprite
     this.load.spritesheet('dude',
-        'http://labs.phaser.io/assets/sprites/dude.png',
-        { frameWidth: 32, frameHeight: 48 }
+        'assets/du.png',
+        { frameWidth: 40.6, frameHeight: 48 }
     );
 
 }
@@ -75,16 +75,28 @@ function create() {
 
     platforms = this.physics.add.staticGroup();
 
+    /*
+        plataformas grandes
+    */
+
     platforms.create(400, 568, 'suelo').setScale(4, 0.5).refreshBody();
-    platforms.create(580, 728, 'suelo').setScale(4, 0.5).refreshBody();
-    platforms.create(970, 980, 'suelo').setScale(100, 0.5).refreshBody();
+    platforms.create(600, 728, 'suelo').setScale(4, 0.5).refreshBody();
+    platforms.create(970, 980, 'suelo').setScale(6, 0.5).refreshBody();
+    platforms.create(1000, 1300, 'suelo').setScale(100, 0.5).refreshBody();
+    /*
+        plataformas chiquitas
+    */
 
     platforms.create(600, 400, 'suelo').setScale(1, 0.2).refreshBody();
-    platforms.create(50, 250, 'suelo').setScale(1, 0.2).refreshBody();
+    platforms.create(1700, 300, 'suelo').setScale(1, 0.2).refreshBody();
+    platforms.create(1200, 250, 'suelo').setScale(1, 0.2).refreshBody();
     platforms.create(750, 220, 'suelo').setScale(1, 0.2).refreshBody();
+    platforms.create(2100, 180, 'suelo').setScale(1, 0.2).refreshBody();
     platforms.create(120, 200, 'suelo').setScale(1, 0.2).refreshBody();
-    platforms.create(1200, 470, 'suelo').setScale(1, 0.2).refreshBody();
-    platforms.create(6000, 470, 'suelo').setScale(1, 0.2).refreshBody();
+    platforms.create(1500, 470, 'suelo').setScale(1, 0.2).refreshBody();
+    platforms.create(1600, 590, 'suelo').setScale(1, 0.2).refreshBody();
+    platforms.create(2300, 555, 'suelo').setScale(1, 0.2).refreshBody();
+    platforms.create(400, 1200, 'suelo').setScale(1, 0.2).refreshBody();
 
     player = this.physics.add.sprite(100, 450, 'dude');
 
@@ -93,45 +105,52 @@ function create() {
 
     this.anims.create({
         key: 'left',
-        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+        frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 2 }),
         frameRate: 10,
         repeat: -1
     });
 
     this.anims.create({
         key: 'turn',
-        frames: [{ key: 'dude', frame: 4 }],
+        frames: [{ key: 'dude', frame: 3 }],
         frameRate: 20
     });
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 6 }),
         frameRate: 10,
         repeat: -1
     });
 
     player.body.setGravityY(300);
     this.physics.add.collider(player, platforms);
-    
+    //camara para que siga al jugador
     this.cameras.main.startFollow(player, platforms, 0.05, 0.05);
     scoreText = this.add.text(16, 16, 'score: 0', { fontSize: '32px', fill: '#000' });
-    
+    //creacion del cursor, para mover el personaje
     cursors = this.input.keyboard.createCursorKeys();
-
-   
+    //grupo statico de diamantes
     diamantes = this.physics.add.staticGroup()
-    diamantes.create(700, 518, 'diamante').setScale(0.8, 0.8).refreshBody();
+    /*
+        creacion de los diamentes y colocacion
+    */
+    for (let index = 0; index < 200; index++) {
+        
+        diamantes.create(Phaser.Math.Between(0, 2300), Phaser.Math.Between(0, 1200), 'diamante').setScale(0.8, 0.8).refreshBody();
 
+    }
+    
     this.physics.add.collider(diamantes, platforms);
-    this.physics.add.collider(player, diamantes, ColisionFresa, null, this);
+    this.physics.add.collider(player, diamantes, ColisionDiamante, null, this);
 
     metas = this.physics.add.staticGroup();
 
-    metas.create(900, 518, 'meta').setScale(0.1, 0.1).refreshBody();
+    metas.create(2300, 350, 'meta').setScale(0.1, 0.1).refreshBody();
     this.physics.add.collider(metas, platforms);
 
     this.physics.add.collider(player, metas, meta, null, this);
+
 }
 
 function update() {
