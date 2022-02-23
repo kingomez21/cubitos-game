@@ -135,7 +135,7 @@ function create() {
     /*
         creacion de los diamentes y colocacion
     */
-    for (let index = 0; index < 200; index++) {
+    for (let index = 0; index < 210; index++) {
         
         diamantes.create(Phaser.Math.Between(0, 2300), Phaser.Math.Between(0, 1200), 'diamante').setScale(0.8, 0.8).refreshBody();
 
