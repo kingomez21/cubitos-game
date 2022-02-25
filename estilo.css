@@ -1,13 +1,30 @@
 
 body {
 
-    background: url(img/fondo1.jpg)
+    background: url(img/fondo1.jpg);
+    text-align: center;
+    padding-top: 15%;
+    margin-left: 25%;
     
     
 }
+h1 {
+  font-size: 200%;
+  position: center;
+  text-align: center;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+}
+
+h2 {
+  font-size: 200%;
+  position: center;
+  text-align: center;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  margin-top: 0%;
+}
 
 .button {
-    position: relative;
+    position: center;
     left: 500px;
    
     display: inline-block;
