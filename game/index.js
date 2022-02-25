@@ -25,10 +25,14 @@ var game = new Phaser.Game(config);
 
 let score = 0
 let scoreText
+let musica
+let diamanteAudio
+let caminar 
 
 function ColisionDiamante(player, diamante) {
+    diamanteAudio.play()
     diamante.disableBody(true, true);
-    score += 10;
+    score += 1;
     scoreText.setText('Score: ' + score);
 }
 
@@ -60,9 +64,24 @@ function preload() {
         { frameWidth: 40.6, frameHeight: 48 }
     );
 
+    //audio
+    this.load.audio('theme', [
+        'http://labs.phaser.io/assets/audio/oedipus_wizball_highscore.ogg',
+        'http://labs.phaser.io/assets/audio/oedipus_wizball_highscore.mp3'
+    ]);
+
+    this.load.audio('audioDiamante', [
+        'http://labs.phaser.io/assets/audio/SoundEffects/p-ping.mp3'
+    ]);
+
+    this.load.audio('caminar', [
+        'assets/zapatos.mp3'
+    ]);
 }
 
 function create() {
+
+    
 
     this.cameras.main.setBounds(0, 0, 1280 * 2, 720 * 2);
 
@@ -118,7 +137,7 @@ function create() {
 
     this.anims.create({
         key: 'right',
-        frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 6 }),
+        frames: this.anims.generateFrameNumbers('dude', { start: 4, end: 6 }),
         frameRate: 10,
         repeat: -1
     });
@@ -135,6 +154,7 @@ function create() {
     /*
         creacion de los diamentes y colocacion
     */
+    diamanteAudio = this.sound.add('audioDiamante')
     for (let index = 0; index < 210; index++) {
         
         diamantes.create(Phaser.Math.Between(0, 2300), Phaser.Math.Between(0, 1200), 'diamante').setScale(0.8, 0.8).refreshBody();
@@ -151,17 +171,27 @@ function create() {
 
     this.physics.add.collider(player, metas, meta, null, this);
 
+    caminar = this.sound.add('caminar')
+
+    music = this.sound.add('theme');
+    //music.play()
+
+    
 }
 
 function update() {
 
     if (cursors.left.isDown) {
+        //caminar.play()
         player.setVelocityX(-160);
         player.anims.play('left', true);
+        
     }
     else if (cursors.right.isDown) {
+        //caminar.play()
         player.setVelocityX(160);
         player.anims.play('right', true);
+        
     }
     else {
         player.setVelocityX(0);
